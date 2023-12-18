@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "package": "com.fastasyncworldsave.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "fastasyncworldsave.refmap.json",
+  "mixinPriority": 200,
+  "mixins": [
+    "SavedDataMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  },
+  "minVersion": "0.8"
+}

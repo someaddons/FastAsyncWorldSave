@@ -1,4 +1,4 @@
-package com.template.event;
+package com.fastasyncworldsave.event;
 
 public class ClientEventHandler
 {

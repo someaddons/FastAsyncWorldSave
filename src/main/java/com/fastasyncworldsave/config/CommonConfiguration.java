@@ -1,8 +1,7 @@
-package com.template.config;
+package com.fastasyncworldsave.config;
 
 import com.cupboard.config.ICommonConfig;
 import com.google.gson.JsonObject;
-import com.template.TemplateMod;
 
 public class CommonConfiguration implements ICommonConfig
 {
