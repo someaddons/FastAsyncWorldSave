@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "fastasyncworldsave",
+  "version": "${version}",
+
+  "name": "fastasyncworldsave Mod",
+  "description": "",
+  "authors": [
+    "Someaddon"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "ARR",
+  "icon": "assets/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.fastasyncworldsave.FastAsyncWorldSave"
+    ],
+    "client": [
+      "com.fastasyncworldsave.FastAsyncWorldSaveClient"
+    ]
+  },
+  "mixins": [
+    "fastasyncworldsave.mixins.json"
+  ],
+  "accessWidener": "fastasyncworldsave.accessWidener",
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "cupboard": "*",
+    "fabric": "*",
+    "minecraft": "1.20.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
