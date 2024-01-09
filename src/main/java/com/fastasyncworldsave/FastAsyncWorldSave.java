@@ -19,7 +19,6 @@ public class FastAsyncWorldSave
 {
     public static final String                              MOD_ID = "fastasyncworldsave";
     public static final Logger                              LOGGER = LogManager.getLogger();
-    //private static      CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MOD_ID, new CommonConfiguration());
     public static       Random                              rand   = new Random();
 
     public FastAsyncWorldSave()
