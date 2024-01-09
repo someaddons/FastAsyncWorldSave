@@ -5,6 +5,7 @@
   "refmap": "fastasyncworldsave.refmap.json",
   "mixinPriority": 200,
   "mixins": [
+    "DimensionDataStorageMixin",
     "SavedDataMixin"
   ],
   "client": [
