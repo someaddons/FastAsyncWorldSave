@@ -29,8 +29,21 @@ public abstract class DimensionDataStorageMixin
         {
             if (savedData != null)
             {
+                if (!savedData.isDirty())
+                {
+                    return;
+                }
+
                 CompoundTag compoundTag = new CompoundTag();
-                compoundTag.put("data", savedData.save(new CompoundTag()));
+
+                final CompoundTag ser = savedData.save(new CompoundTag());
+
+                if (ser == null)
+                {
+                    return;
+                }
+
+                compoundTag.put("data", ser);
                 NbtUtils.addCurrentDataVersion(compoundTag);
                 ((ISaveData) savedData).setToSave(compoundTag);
 
