@@ -25,6 +25,11 @@ public abstract class DimensionDataStorageMixin
     {
         if (savedData != null)
         {
+            if (!savedData.isDirty())
+            {
+                return;
+            }
+
             CompoundNBT compoundTag = new CompoundNBT();
 
             final CompoundNBT ser = savedData.save(new CompoundNBT());
