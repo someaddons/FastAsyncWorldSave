@@ -4,7 +4,6 @@ import com.fastasyncworldsave.FastAsyncWorldSave;
 import com.fastasyncworldsave.ISaveData;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,9 +42,8 @@ public abstract class DimensionDataStorageMixin
                     return;
                 }
 
-                compoundTag.put("data", ser);
-                NbtUtils.addCurrentDataVersion(compoundTag);
                 ((ISaveData) savedData).setToSave(compoundTag);
+                savedData.setDirty(false);
 
                 Util.ioPool().submit(() -> {
                     try
