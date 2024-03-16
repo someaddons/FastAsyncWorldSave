@@ -33,8 +33,6 @@ public abstract class DimensionDataStorageMixin
                     return;
                 }
 
-                CompoundTag compoundTag = new CompoundTag();
-
                 final CompoundTag ser = savedData.save(new CompoundTag());
 
                 if (ser == null)
@@ -42,7 +40,7 @@ public abstract class DimensionDataStorageMixin
                     return;
                 }
 
-                ((ISaveData) savedData).setToSave(compoundTag);
+                ((ISaveData) savedData).setToSave(ser);
                 savedData.setDirty(false);
 
                 Util.ioPool().submit(() -> {
@@ -52,7 +50,7 @@ public abstract class DimensionDataStorageMixin
                     }
                     catch (Exception e)
                     {
-                        FastAsyncWorldSave.LOGGER.error("Could not save data " + compoundTag.toString(), this, e);
+                        FastAsyncWorldSave.LOGGER.error("Could not save data " + ser.toString(), this, e);
                     }
                 });
             }
