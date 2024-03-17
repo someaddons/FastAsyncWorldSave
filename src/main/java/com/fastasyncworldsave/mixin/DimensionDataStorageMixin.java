@@ -44,6 +44,7 @@ public abstract class DimensionDataStorageMixin
                 savedData.setDirty(false);
 
                 Util.ioPool().submit(() -> {
+                    ((ISaveData) savedData).setThread(Thread.currentThread());
                     try
                     {
                         savedData.save(getDataFile(string));
@@ -52,6 +53,7 @@ public abstract class DimensionDataStorageMixin
                     {
                         FastAsyncWorldSave.LOGGER.error("Could not save data " + ser.toString(), this, e);
                     }
+                    ((ISaveData) savedData).setThread(null);
                 });
             }
         });
