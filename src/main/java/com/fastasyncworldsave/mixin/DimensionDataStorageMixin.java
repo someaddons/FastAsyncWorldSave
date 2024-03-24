@@ -1,9 +1,10 @@
 package com.fastasyncworldsave.mixin;
 
 import com.fastasyncworldsave.FastAsyncWorldSave;
-import com.fastasyncworldsave.ISaveData;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -40,20 +43,32 @@ public abstract class DimensionDataStorageMixin
                     return;
                 }
 
-                ((ISaveData) savedData).setToSave(ser);
                 savedData.setDirty(false);
 
                 Util.ioPool().submit(() -> {
-                    ((ISaveData) savedData).setThread(Thread.currentThread());
                     try
                     {
-                        savedData.save(getDataFile(string));
+                        final CompoundTag compoundtag = new CompoundTag();
+                        compoundtag.put("data", ser);
+                        NbtUtils.addCurrentDataVersion(compoundtag);
+
+                        File file = getDataFile(string);
+                        File temp = file.toPath().getParent().resolve("tmp_" + file.getName()).toFile();
+
+                        NbtIo.writeCompressed(compoundtag, temp);
+                        try
+                        {
+                            Files.move(temp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE);
+                        }
+                        catch (Exception e)
+                        {
+                            Files.move(temp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        }
                     }
                     catch (Exception e)
                     {
-                        FastAsyncWorldSave.LOGGER.error("Could not save data " + ser.toString(), this, e);
+                        FastAsyncWorldSave.LOGGER.error("Could not save data " + ser.toString(), e);
                     }
-                    ((ISaveData) savedData).setThread(null);
                 });
             }
         });
