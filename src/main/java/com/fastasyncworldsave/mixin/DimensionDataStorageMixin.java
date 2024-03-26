@@ -55,6 +55,7 @@ public abstract class DimensionDataStorageMixin
                         File file = getDataFile(string);
                         File temp = file.toPath().getParent().resolve("tmp_" + file.getName()).toFile();
 
+                        temp.getParentFile().mkdirs();
                         NbtIo.writeCompressed(compoundtag, temp);
                         try
                         {
