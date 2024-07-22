@@ -1,6 +1,7 @@
 package com.fastasyncworldsave.mixin;
 
 import com.fastasyncworldsave.FastAsyncWorldSave;
+import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -50,7 +51,7 @@ public abstract class DimensionDataStorageMixin
                     {
                         final CompoundTag compoundtag = new CompoundTag();
                         compoundtag.put("data", ser);
-                        NbtUtils.addCurrentDataVersion(compoundtag);
+                        compoundtag.putInt("DataVersion", SharedConstants.getCurrentVersion().getWorldVersion());
 
                         File file = getDataFile(string);
                         File temp = file.toPath().getParent().resolve("tmp_" + file.getName()).toFile();
