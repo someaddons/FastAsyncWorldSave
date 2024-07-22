@@ -1,15 +1,10 @@
 package com.fastasyncworldsave;
 
-import com.cupboard.config.CupboardConfig;
-import com.fastasyncworldsave.config.CommonConfiguration;
-import com.fastasyncworldsave.event.EventHandler;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,16 +16,14 @@ import static com.fastasyncworldsave.FastAsyncWorldSave.MOD_ID;
 @Mod(MOD_ID)
 public class FastAsyncWorldSave
 {
-    public static final String                              MOD_ID = "fastasyncworldsave";
-    public static final Logger                              LOGGER = LogManager.getLogger();
+    public static final String MOD_ID = "fastasyncworldsave";
+    public static final Logger LOGGER = LogManager.getLogger();
     //private static      CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MOD_ID, new CommonConfiguration());
-    public static       Random                              rand   = new Random();
+    public static       Random rand   = new Random();
 
-    public FastAsyncWorldSave()
+    public FastAsyncWorldSave(IEventBus modEventBus, ModContainer modContainer)
     {
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (a, b) -> true));
-        Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(EventHandler.class);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        modEventBus.addListener(this::clientSetup);
     }
 
     @SubscribeEvent
