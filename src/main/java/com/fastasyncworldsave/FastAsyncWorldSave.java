@@ -19,9 +19,4 @@ public class FastAsyncWorldSave implements ModInitializer
     public void onInitialize()
     {
     }
-
-    public static ResourceLocation id(String name)
-    {
-        return new ResourceLocation(MOD_ID, name);
-    }
 }

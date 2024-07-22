@@ -2,11 +2,13 @@ package com.fastasyncworldsave.mixin;
 
 import com.fastasyncworldsave.FastAsyncWorldSave;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +26,10 @@ public abstract class DimensionDataStorageMixin
     @Shadow
     protected abstract File getDataFile(final String string);
 
+    @Shadow
+    @Final
+    private HolderLookup.Provider registries;
+
     @Redirect(method = "save", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
     private void fastasyncworldsave$saveOffthread(final Map<String, SavedData> instance, final BiConsumer<String, SavedData> entry)
     {
@@ -36,7 +42,7 @@ public abstract class DimensionDataStorageMixin
                     return;
                 }
 
-                final CompoundTag ser = savedData.save(new CompoundTag());
+                final CompoundTag ser = savedData.save(new CompoundTag(), registries);
 
                 if (ser == null)
                 {
@@ -56,7 +62,7 @@ public abstract class DimensionDataStorageMixin
                         File temp = file.toPath().getParent().resolve("tmp_" + file.getName()).toFile();
 
                         temp.getParentFile().mkdirs();
-                        NbtIo.writeCompressed(compoundtag, temp);
+                        NbtIo.writeCompressed(compoundtag, temp.toPath());
                         try
                         {
                             Files.move(temp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE);
