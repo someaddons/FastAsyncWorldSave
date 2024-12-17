@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -33,32 +34,57 @@ public abstract class DimensionDataStorageMixin
     @Redirect(method = "save", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
     private void fastasyncworldsave$saveOffthread(final Map<String, SavedData> instance, final BiConsumer<String, SavedData> entry)
     {
-        instance.forEach((string, savedData) ->
+        Map<String, CompoundTag> toSave = null;
+        for (Map.Entry<String, SavedData> mapEntry : instance.entrySet())
         {
+            String id = mapEntry.getKey();
+            SavedData savedData = mapEntry.getValue();
             if (savedData != null)
             {
                 if (!savedData.isDirty())
                 {
-                    return;
+                    continue;
                 }
 
-                final CompoundTag ser = savedData.save(new CompoundTag(), registries);
-
-                if (ser == null)
+                final CompoundTag compound;
+                try
                 {
-                    return;
+                    compound = savedData.save(new CompoundTag(), registries);
+                }
+                catch (Exception e)
+                {
+                    FastAsyncWorldSave.LOGGER.error("Level data failed to save for: " + id + " report to the respective mod", e);
+                    continue;
+                }
+
+                if (compound == null)
+                {
+                    continue;
+                }
+
+                if (toSave == null)
+                {
+                    toSave = new HashMap<>();
                 }
 
                 savedData.setDirty(false);
+                toSave.put(id, compound);
+            }
+        }
 
-                Util.ioPool().submit(() -> {
+        if (toSave != null)
+        {
+            final Map<String, CompoundTag> saveData = toSave;
+            Util.ioPool().submit(() -> {
+                for (final var toSaveEntry : saveData.entrySet())
+                {
                     try
                     {
                         final CompoundTag compoundtag = new CompoundTag();
-                        compoundtag.put("data", ser);
+                        compoundtag.put("data", toSaveEntry.getValue());
                         NbtUtils.addCurrentDataVersion(compoundtag);
 
-                        File file = getDataFile(string);
+                        File file = getDataFile(toSaveEntry.getKey());
                         File temp = file.toPath().getParent().resolve("tmp_" + file.getName()).toFile();
 
                         temp.getParentFile().mkdirs();
@@ -74,10 +100,10 @@ public abstract class DimensionDataStorageMixin
                     }
                     catch (Exception e)
                     {
-                        FastAsyncWorldSave.LOGGER.error("Could not save data: " + e + " " + ser.toString(), e);
+                        FastAsyncWorldSave.LOGGER.error("Could not save data " + toSaveEntry.getValue().toString(), e);
                     }
-                });
-            }
-        });
+                }
+            });
+        }
     }
 }
