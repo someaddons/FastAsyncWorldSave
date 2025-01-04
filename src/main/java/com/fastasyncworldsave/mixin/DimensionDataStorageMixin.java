@@ -69,7 +69,7 @@ public abstract class DimensionDataStorageMixin
         if (toSave != null)
         {
             final Map<String, CompoundTag> saveData = toSave;
-            Util.ioPool().submit(() -> {
+            FastAsyncWorldSave.threadPool.submit(() -> {
                 for (final var toSaveEntry : saveData.entrySet())
                 {
                     try
