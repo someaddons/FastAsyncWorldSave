@@ -9,6 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import static com.fastasyncworldsave.FastAsyncWorldSave.MOD_ID;
 
@@ -20,6 +23,17 @@ public class FastAsyncWorldSave
     public static final Logger LOGGER = LogManager.getLogger();
     //private static      CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MOD_ID, new CommonConfiguration());
     public static       Random rand   = new Random();
+
+    public static ExecutorService threadPool = Executors.newSingleThreadExecutor(new ThreadFactory()
+    {
+        @Override
+        public Thread newThread(final Runnable r)
+        {
+            Thread thread = new Thread(r);
+            thread.setName(MOD_ID);
+            return thread;
+        }
+    });
 
     public FastAsyncWorldSave(IEventBus modEventBus, ModContainer modContainer)
     {
