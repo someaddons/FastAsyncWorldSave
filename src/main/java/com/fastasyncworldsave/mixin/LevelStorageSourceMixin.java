@@ -22,7 +22,7 @@ public class LevelStorageSourceMixin
 {
     @Shadow
     @Final
-    private LevelStorageSource.LevelDirectory levelDirectory;
+    public LevelStorageSource.LevelDirectory levelDirectory;
 
     @Inject(method = "saveDataTag(Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/level/storage/WorldData;Lnet/minecraft/nbt/CompoundTag;)V",
         at = @At(value = "INVOKE", target = "Ljava/io/File;createTempFile(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;)Ljava/io/File;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
