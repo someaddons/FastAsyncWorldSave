@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixinPriority": 200,
   "mixins": [
-    "DimensionDataStorageMixin"
+    "DimensionDataStorageMixin",
+    "LevelStorageSourceMixin"
   ],
   "client": [
   ],
