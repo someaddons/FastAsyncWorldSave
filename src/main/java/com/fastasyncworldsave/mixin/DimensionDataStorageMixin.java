@@ -1,7 +1,6 @@
 package com.fastasyncworldsave.mixin;
 
 import com.fastasyncworldsave.FastAsyncWorldSave;
-import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -75,7 +74,7 @@ public abstract class DimensionDataStorageMixin
         if (toSave != null)
         {
             final Map<String, CompoundTag> saveData = toSave;
-            Util.ioPool().submit(() -> {
+            FastAsyncWorldSave.threadPool.submit(() -> {
                 for (final var toSaveEntry : saveData.entrySet())
                 {
                     try
