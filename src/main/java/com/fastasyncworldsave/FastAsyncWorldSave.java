@@ -5,6 +5,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +40,7 @@ public class FastAsyncWorldSave
     public FastAsyncWorldSave(IEventBus modEventBus, ModContainer modContainer)
     {
         modEventBus.addListener(this::clientSetup);
+        NeoForge.EVENT_BUS.addListener(this::onShutdown);
     }
 
     @SubscribeEvent
@@ -45,5 +48,14 @@ public class FastAsyncWorldSave
     {
         // Side safe client event handler
         FastAsyncWorldSaveClient.onInitializeClient(event);
+    }
+
+    @SubscribeEvent
+    public void onShutdown(ServerStoppedEvent event)
+    {
+        if (event.getServer().isDedicatedServer())
+        {
+            threadPool.shutdown();
+        }
     }
 }
