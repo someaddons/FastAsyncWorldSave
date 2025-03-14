@@ -1,7 +1,6 @@
 package com.fastasyncworldsave;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +24,7 @@ public class FastAsyncWorldSave implements ModInitializer
         {
             Thread thread = new Thread(r);
             thread.setName(MOD_ID);
+            thread.setDaemon(true);
             return thread;
         }
     });
@@ -32,11 +32,6 @@ public class FastAsyncWorldSave implements ModInitializer
     @Override
     public void onInitialize()
     {
-        ServerLifecycleEvents.SERVER_STOPPED.register(s -> {
-            if (s.isDedicatedServer())
-            {
-                threadPool.shutdown();
-            }
-        });
+
     }
 }
