@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.io.File;
@@ -29,6 +30,19 @@ public abstract class DimensionDataStorageMixin
     @Shadow
     @Final
     private HolderLookup.Provider registries;
+
+    @ModifyVariable(method = "getDataFile", at = @At("HEAD"), argsOnly = true)
+    private String fixName(final String value)
+    {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (value.contains(":") && (os.contains("win") || os.contains("mac")))
+        {
+            return value.replace(":", "_");
+        }
+
+        return value;
+    }
 
     @Redirect(method = "save", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
     private void fastasyncworldsave$saveOffthread(final Map<String, SavedData> instance, final BiConsumer<String, SavedData> entry)
