@@ -1,9 +1,9 @@
 package com.fastasyncworldsave.mixin;
 
 import com.fastasyncworldsave.FastAsyncWorldSave;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
